@@ -1,4 +1,5 @@
-# ===== Set stuff =====
+Set stuff
+=========
 
 ```ruby
 # Sets: hashes where the values are "true".
@@ -24,7 +25,8 @@ Set[2,5,8] - Set[*1..5]  # => #<Set: {8}>
 ```
 
 
-# =====  Joins  =====
+Joins
+=====
 
 Set operations on rows of tables
 You can also think about these visually: http://blog.codinghorror.com/a-visual-explanation-of-sql-joins/
@@ -45,6 +47,7 @@ INNER JOIN sales     ON fruits.id         = sales.fruit_id
 INNER JOIN customers ON sales.customer_id = customers.id;
 ```
 
-# =====  Lets see some of these in Sqlite  =====
+Lets see some of these in Sqlite
+================================
 
 Check out example.rb
