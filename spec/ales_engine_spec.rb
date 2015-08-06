@@ -2,9 +2,19 @@ require 'ales_engine'
 require 'sqlite3'
 
 RSpec.describe AlesEngine do
-  it 'Big acceptance test', acceptance: true do
+  let :db do
     db = SQLite3::Database.new ':memory:'
+    db.results_as_hash = true
+    db
+  end
 
+  let :fruits do
+    fruits = AlesEngine::Table.new(db, :fruits, id: :integer, name: :string)
+    fruits.create_table
+    fruits
+  end
+
+  it 'Big acceptance test', acceptance: true do
     # orm
     customers = AlesEngine::Table.new(db, :customers, id: :integer, name:  :string)
     ales      = AlesEngine::Table.new(db, :ales,      id: :integer, label: :string)
@@ -45,8 +55,6 @@ RSpec.describe AlesEngine do
   end
 
   describe AlesEngine::Table do
-    let(:db) { SQLite3::Database.new ':memory:' }
-
     describe 'create_table' do
       it 'creates the table if it dne' do
         bs = AlesEngine::Table.new(db, :bs, id: :integer)
@@ -60,6 +68,21 @@ RSpec.describe AlesEngine do
         db.execute('create table bs (id integer primary key autoincrement);')
         bs.create_table
         expect(db.execute 'select * from bs').to eq []
+      end
+    end
+
+
+    describe 'add' do
+      it 'adds the row to the table with the attributes in the appropriate columns' do
+        expect(fruits.all).to be_empty
+        fruits.add([{name: 'apple'}])
+        expect(fruits.all.map &:name).to eq ['apple']
+      end
+
+      it 'accepts duplicate rows' do
+        fruits.add([{name: 'apple'}])
+        fruits.add([{name: 'apple'}])
+        expect(fruits.all.map &:name).to eq ['apple', 'apple']
       end
     end
   end
