@@ -5,7 +5,7 @@ module AlesEngine
 
       Class.new do
         define_singleton_method(:attribute_names) { attribute_names }
-        attr_accessor *attributes.keys
+        attr_accessor *attributes.keys # here is an explanation of the asterisk: https://gist.github.com/JoshCheek/c881f0602e945cfeea28
 
         def initialize(attributes)
           self.class.attribute_names.each do |name|
