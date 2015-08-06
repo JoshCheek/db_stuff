@@ -38,11 +38,13 @@ RSpec.describe AlesEngine do
     expect(josh.id).to eq 3
     expect(josh.name).to eq 'Josh'
 
-    nut_brown = ales.find_by(name: 'Nut Brown')
+    nut_brown = ales.find_by(label: 'Nut Brown')
     expect(nut_brown.id).to eq    4
     expect(nut_brown.label).to eq 'Nut Brown'
 
     # going through associations
+    # And now we need to figure out what we want the associations to be
+    #
     # orders    = AlesEngine::Table.new(db, :orders, customer_id: :integer, ale_id: :integer)
     # customer_id | ale_id
     # ------------|-------
@@ -50,8 +52,8 @@ RSpec.describe AlesEngine do
     #           2 |      4
     #           2 |      1
     #           1 |      5
-    expect(nut_brown.customers.map(&:name)).to eq  ['Josh', 'Matt']
-    expect(nut_brown.customers.last.ales.map(&:label)).to eq ['Nut Brown', 'India Pale Ale']
+    # expect(nut_brown.customers.map(&:name)).to eq  ['Josh', 'Matt']
+    # expect(nut_brown.customers.last.ales.map(&:label)).to eq ['Nut Brown', 'India Pale Ale']
   end
 
   describe AlesEngine::Table do
@@ -83,6 +85,16 @@ RSpec.describe AlesEngine do
         fruits.add([{name: 'apple'}])
         fruits.add([{name: 'apple'}])
         expect(fruits.all.map &:name).to eq ['apple', 'apple']
+      end
+    end
+
+
+    describe 'find_by' do
+      it 'returns the first record that matches the criteria' do
+        fruits.add([{name: 'pear'}, {name: 'apple'}, {name: 'apple'}])
+        expect(fruits.find_by(name: 'apple').id).to eq 2
+        expect(fruits.find_by(id: 3, name: 'apple').id).to eq 3
+        expect(fruits.find_by(id: 3, name: 'pear')).to eq nil
       end
     end
   end

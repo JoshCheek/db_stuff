@@ -25,12 +25,20 @@ module AlesEngine
     end
 
     def create_table
-      db.execute("create table if not exists #{table_name} (#{column_definitions.join(', ')});")
+      db.execute "create table if not exists #{table_name} (#{column_definitions.join ', '});"
     end
 
     def all
       db.execute("select * from #{table_name};")
         .map { |attrs| record_class.new attrs }
+    end
+
+    def find_by(criteria)
+      where_clauses = criteria.map { |attr, value| "#{attr} = ?" }.join(' and ')
+      query         = "select * from #{table_name} where #{where_clauses} limit 1;"
+      db.execute(query, criteria.values)
+        .map { |attrs| record_class.new attrs }
+        .first
     end
 
     def add(record_attributes)
